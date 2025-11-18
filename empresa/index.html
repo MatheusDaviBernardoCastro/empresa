@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroMonitor Tech - Monitoramento Aeronáutico</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Personalizado para visual bonito */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: background 0.3s ease;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        nav ul li {
+            margin: 0 1rem;
+        }
+        
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: #00bfff;
+        }
+        
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+        
+        /* Hero Section com Slider */
+        .hero {
+            height: 100vh;
+            background: url('https://source.unsplash.com/random/1920x1080/?airplane') no-repeat center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero-content {
+            z-index: 1;
+            animation: fadeInUp 1s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .slider {
+            position: relative;
+            max-width: 800px;
+            margin: 2rem auto;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .slide {
+            min-width: 100%;
+            height: 300px;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+        
+        .slide:nth-child(1) { background: url('https://source.unsplash.com/random/800x300/?radar') no-repeat center/cover; }
+        .slide:nth-child(2) { background: url('https://source.unsplash.com/random/800x300/?aircraft') no-repeat center/cover; }
+        .slide:nth-child(3) { background: url('https://source.unsplash.com/random/800x300/?monitoring') no-repeat center/cover; }
+        
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 191, 255, 0.8);
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .slider-btn:hover { background: #00bfff; }
+        
+        .prev { left: 10px; }
+        .next { right: 10px; }
+        
+        /* Seções */
+        section {
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .about, .services {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .service-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #00bfff;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 191, 255, 0.3);
+        }
+        
+        .service-card i {
+            font-size: 3rem;
+            color: #00bfff;
+            margin-bottom: 1rem;
+        }
+        
+        /* Estilos para seção de modelos de aeronaves */
+        .aircraft-models {
+            margin-top: 3rem;
+        }
+        
+        .aircraft-models h3 {
+            font-family: 'Orbitron', monospace;
+            color: #00bfff;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+        
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .model-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 191, 255, 0.3);
+        }
+        
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 191, 255, 0.4);
+        }
+        
+        .model-image {
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .model-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .model-card:hover .model-image img {
+            transform: scale(1.05);
+        }
+        
+        .model-card-content {
+            padding: 1rem;
+        }
+        
+        .model-card h4 {
+            font-family: 'Orbitron', monospace;
+            color: #00bfff;
+            margin: 0 0 0.5rem;
+        }
+        
+        .model-card p {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        /* Radar SVG Animado (exemplo de integração gráfica) */
+        .radar {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+        }
+        
+        .radar-svg {
+            animation: rotate 2s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Formulário de Contato */
+        .contact form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+        
+        .contact input, .contact textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        
+        .contact button {
+            background: #00bfff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .contact button:hover { background: #0099cc; }
+        
+        footer {
+            background: #000;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            nav ul { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: rgba(0,0,0,0.9); }
+            nav ul.active { display: flex; }
+            .hero h1 { font-size: 2.5rem; }
+            .models-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul id="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">Sobre</a></li>
+                <li><a href="#services">Serviços</a></li>
+                <li><a href="#contact">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>AeroMonitor Tech</h1>
+            <p>Monitoramento avançado para a aviação do futuro. Segurança e precisão em tempo real.</p>
+            <div class="slider">
+                <div class="slides" id="slides">
+                    <div class="slide">Monitoramento de Rotas em Tempo Real</div>
+                    <div class="slide">Análise de Dados Aeronáuticos</div>
+                    <div class="slide">Sistemas de Alerta Inteligente</div>
+                </div>
+                <button class="slider-btn prev" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+                <button class="slider-btn next" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>Sobre a AeroMonitor Tech</h2>
+            <p>Somos especialistas em tecnologias de monitoramento aeronáutico, utilizando IA e sensores avançados para garantir a segurança no céu.</p>
+            <svg class="radar" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="90" stroke="#00bfff" stroke-width="2" fill="none" />
+                <line x1="100" y1="100" x2="100" y2="10" stroke="#00bfff" stroke-width="2" class="radar-svg" />
+            </svg>
+            
+            <!-- Nova Seção: Modelos de Aeronaves -->
+            <div class="aircraft-models">
+                <h3>Modelos de Aeronaves que Monitoramos</h3>
+                <div class="models-grid">
+                    <div class="model-card">
+                        <div class="model-image">
+                            <img src="a-removebg-preview.png" alt="Boeing 737">
+                        </div>
+                        <div class="model-card-content">
+                            <h4>Boeing 737</h4>
+                            <p>Monitoramento completo de jatos comerciais da série 737.</p>
+                        </div>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-image">
+                            <img src="OIP-removebg-preview.png" alt="Airbus A320">
+                        </div>
+                        <div class="model-card-content">
+                            <h4>Airbus A320</h4>
+                            <p>Sistema avançado de rastreamento para aeronaves Airbus.</p>
+                        </div>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-image">
+                            <img src="b-removebg-preview.png" alt="Embraer E-Jets">
+                        </div>
+                        <div class="model-card-content">
+                            <h4>Embraer E-Jets</h4>
+                            <p>Monitoramento especializado para jatos regionais brasileiros.</p>
+                        </div>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-image">
+                            <img src="c-removebg-preview.png" alt="Cessna Citation">
+                        </div>
+                        <div class="model-card-content">
+                            <h4>Cessna Citation</h4>
+                            <p>Soluções premium para jatos executivos e aeronaves particulares.</p>
+                        </div>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-image">
+                            <img src="d-removebg-preview.png" alt="Helicópteros">
+                        </div>
+                        <div class="model-card-content">
+                            <h4>Helicópteros</h4>
+                            <p>Monitoramento em tempo real para aeronaves de asas rotativas.</p>
+                        </div>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-image">
+                            <img src="e-removebg-preview.png" alt="Aeronaves Militares">
+                        </div>
+                        <div class="model-card-content">
+                            <h4>Aeronaves Militares</h4>
+                            <p>Sistemas seguros para monitoramento de frota militar e governamental.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Serviços -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2>Nossos Serviços</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-satellite"></i>
+                    <h3>Monitoramento Satelital</h3>
+                    <p>Rastreamento global de aeronaves com precisão milimétrica.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Análise de Dados</h3>
+                    <p>Insights em tempo real para otimizar rotas e reduzir custos.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-bell"></i>
+                    <h3>Alertas Automatizados</h3>
+                    <p>Notificações instantâneas para riscos potenciais.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Entre em Contato</h2>
+            <form id="contact-form">
+                <input type="text" placeholder="Seu Nome" required>
+                <input type="email" placeholder="Seu Email" required>
+                <textarea placeholder="Sua Mensagem" rows="5" required></textarea>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 AeroMonitor Tech. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript Personalizado -->
+    <script>
+        // Menu Hambúrguer Responsivo
+        function toggleMenu() {
+        }
